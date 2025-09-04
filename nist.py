@@ -107,12 +107,5 @@ nist_mapping = {
     "M1455": ["IA-2"],  # Application Layer Protocol
     "M1460": ["AC-17"],  # Application Layer Protocol
     "M1465": ["IA-2"],  # Application Layer Protocol
-    "M1470": ["AC-17"],  # Application Layer Protocol
-    "M1475": ["IA-2"],  # Application Layer Protocol
-    "M1480": ["AC-17"],  # Application Layer Protocol
-    "M1485": ["IA-2"],  # Application Layer Protocol
-    "M1490": ["AC-17"],  # Application Layer Protocol
-    "M1495": ["IA-2"],  # Application Layer Protocol
-    "M1500": ["AC-17"],  # Application Layer Protocol
-    "M1505": ["IA-2"]
+    "M1470": ["AC-17"]
 }

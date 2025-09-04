@@ -1,5 +1,4 @@
 from mitre import run_mitre_checks
-from nist import run_nist_checks
 from iso import run_iso_checks
 from password_mfa import run_password_mfa_checks
 
@@ -7,9 +6,6 @@ from password_mfa import run_password_mfa_checks
 def run_checks():
     print("Running MITRE ATT&CK checks...")
     run_mitre_checks()
-
-    print("Running NIST framework checks...")
-    run_nist_checks()
 
     print("Running ISO 27001/27002 validation...")
     run_iso_checks()

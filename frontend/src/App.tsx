@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import ChatPanel from "./components/ChatPanel";
 
 function useDebounced<T>(value: T, delay = 250) {
   const [debounced, setDebounced] = useState(value);
@@ -40,70 +41,172 @@ export default function App() {
       : (<div><strong>{data.control || "?"}</strong> — {data.name || "Control"}</div>);
   }, [data, mode]);
 
-  return (
-    <div style={{maxWidth: 900, margin: "32px auto", padding: 16, fontFamily: "system-ui, sans-serif"}}>
+return (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      gap: 32,
+      alignItems: "flex-start",
+      margin: "32px auto",
+      padding: 16,
+      maxWidth: 1200,
+      fontFamily: "system-ui, sans-serif",
+    }}
+  >
+    {/* LEFT SIDE: main mapper and policy auditor */}
+    <div style={{ flex: 2, minWidth: 500 }}>
       <h1>ATT&CK ↔ NIST Mapper</h1>
 
-      <div style={{display: "flex", gap: 8, marginTop: 12, marginBottom: 12}}>
-        <button onClick={() => { setMode("technique"); setData(null); setError(null); inputRef.current?.focus(); }}
-                style={{padding: "6px 10px", background: mode==="technique"?"#111827":"#e5e7eb", color: mode==="technique"?"#fff":"#111"}}>
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginTop: 12,
+          marginBottom: 12,
+        }}
+      >
+        <button
+          onClick={() => {
+            setMode("technique");
+            setData(null);
+            setError(null);
+            inputRef.current?.focus();
+          }}
+          style={{
+            padding: "6px 10px",
+            background: mode === "technique" ? "#111827" : "#e5e7eb",
+            color: mode === "technique" ? "#fff" : "#111",
+          }}
+        >
           Technique → NIST
         </button>
-        <button onClick={() => { setMode("nist"); setData(null); setError(null); inputRef.current?.focus(); }}
-                style={{padding: "6px 10px", background: mode==="nist"?"#111827":"#e5e7eb", color: mode==="nist"?"#fff":"#111"}}>
+        <button
+          onClick={() => {
+            setMode("nist");
+            setData(null);
+            setError(null);
+            inputRef.current?.focus();
+          }}
+          style={{
+            padding: "6px 10px",
+            background: mode === "nist" ? "#111827" : "#e5e7eb",
+            color: mode === "nist" ? "#fff" : "#111",
+          }}
+        >
           NIST → Technique
         </button>
-        <input ref={inputRef} value={query} onChange={(e)=>setQuery(e.target.value)} placeholder={mode==="technique"?"e.g., T1110":"e.g., AC-2"} style={{flex: 1, padding: "6px 10px"}}/>
-        <button onClick={()=>setQuery((v)=>v.trim())}>Search</button>
+        <input
+          ref={inputRef}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={mode === "technique" ? "e.g., T1110" : "e.g., AC-2"}
+          style={{ flex: 1, padding: "6px 10px" }}
+        />
+        <button onClick={() => setQuery((v) => v.trim())}>Search</button>
       </div>
 
       {!data && !loading && !error && (
-        <div style={{color:"#6b7280"}}>Tip: try <code>T1110</code> or <code>AC-2</code>.</div>
+        <div style={{ color: "#6b7280" }}>
+          Tip: try <code>T1110</code> or <code>AC-2</code>
+        </div>
       )}
 
-      {loading && (
-        <div style={{color:"#6b7280"}}>Loading…</div>
-      )}
+      {loading && <div style={{ color: "#6b7280" }}>Loading…</div>}
 
-      {error && (
-        <div style={{color:"#b91c1c"}}>{error}</div>
-      )}
+      {error && <div style={{ color: "#b91c1c" }}>{error}</div>}
 
       {data && (
-        <div style={{marginTop: 16, display:"grid", gap: 12}}>
+        <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
           <div>{header}</div>
 
-          <section style={{border:"1px solid #e5e7eb", borderRadius:8, padding:12}}>
-            <h3 style={{marginTop:0}}>Exact mappings</h3>
+          <section
+            style={{
+              border: "1px solid #e5e7eb",
+              borderRadius: 8,
+              padding: 12,
+            }}
+          >
+            <h3 style={{ marginTop: 0 }}>Exact mappings</h3>
             {data.exact?.length ? (
               <div>
                 {data.exact.map((row: any, i: number) => (
-                  <div key={i} style={{padding:"8px 0", borderTop: i? "1px solid #eee":"none"}}>
-                    <div><strong>{row.control_id || row.attack_id}</strong> — {row.control_name || row.attack_name}</div>
-                    {row.mapping_type && <div style={{color:"#6b7280", fontSize:12}}>{row.mapping_type}</div>}
+                  <div
+                    key={i}
+                    style={{
+                      padding: "8px 0",
+                      borderTop: i ? "1px solid #eee" : "none",
+                    }}
+                  >
+                    <div>
+                      <strong>{row.control_id || row.attack_id}</strong> —{" "}
+                      {row.control_name || row.attack_name}
+                    </div>
+                    {row.mapping_type && (
+                      <div
+                        style={{ color: "#6b7280", fontSize: 12 }}
+                      >
+                        {row.mapping_type}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            ) : <div style={{color:"#6b7280"}}>No exact results.</div>}
+            ) : (
+              <div style={{ color: "#6b7280" }}>No exact results.</div>
+            )}
           </section>
 
-          <section style={{border:"1px solid #e5e7eb", borderRadius:8, padding:12}}>
-            <h3 style={{marginTop:0}}>Semantic suggestions</h3>
+          <section
+            style={{
+              border: "1px solid #e5e7eb",
+              borderRadius: 8,
+              padding: 12,
+            }}
+          >
+            <h3 style={{ marginTop: 0 }}>Semantic suggestions</h3>
             {data.semantic?.length ? (
               <div>
                 {data.semantic.map((row: any, i: number) => (
-                  <div key={i} style={{padding:"8px 0", borderTop: i? "1px solid #eee":"none"}}>
-                    <div><strong>{row.id}</strong> — {row.name}</div>
-                    {typeof row.score === "number" && <div style={{color:"#6b7280", fontSize:12}}>score: {row.score.toFixed(3)}</div>}
+                  <div
+                    key={i}
+                    style={{
+                      padding: "8px 0",
+                      borderTop: i ? "1px solid #eee" : "none",
+                    }}
+                  >
+                    <div>
+                      <strong>{row.id}</strong> — {row.name}
+                    </div>
+                    {typeof row.score === "number" && (
+                      <div
+                        style={{
+                          color: "#6b7280",
+                          fontSize: 12,
+                        }}
+                      >
+                        score: {row.score.toFixed(3)}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            ) : <div style={{color:"#6b7280"}}>No semantic suggestions.</div>}
+            ) : (
+              <div style={{ color: "#6b7280" }}>
+                No semantic suggestions.
+              </div>
+            )}
           </section>
 
-          <div style={{color:"#6b7280", fontSize:12}}>Data: CTID Mappings Explorer & MITRE ATT&CK</div>
+          <div style={{ color: "#6b7280", fontSize: 12 }}>
+            Data: CTID Mappings Explorer & MITRE ATT&CK
+          </div>
         </div>
       )}
     </div>
+    <div style={{ flex: 1, minWidth: 320, position: "sticky", top: 32 }}>
+      <ChatPanel />
+    </div>
+  </div>
   );
 }

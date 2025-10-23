@@ -9,7 +9,7 @@ from sentence_transformers.util import semantic_search
 from starlette.requests import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.gzip import GZipMiddleware
-
+from .chat_api import router as chat_router
 from . import mitre, nist
 from .password_mfa import router as policy_router
 
@@ -168,3 +168,4 @@ def generic_semantic(
             m = DF_MITRE.iloc[h["corpus_id"]]
             out.append({"id": m["technique_id"], "name": m["name"], "score": s})
         return {"dataset": "mitre", "query": text, "results": out}
+app.include_router(chat_router, prefix="/api")
